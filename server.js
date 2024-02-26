@@ -1,21 +1,25 @@
-const db =require('./db/connection');
-const express=require('express');
-const startInq=('./lib/departments')
-const PORT=process.env.PORT ||3001;
-const app=express();
+const db = require('./db/connection');
+const express = require('express');
+const startInq = require('./lib/departments.js');
+const PORT = process.env.PORT || 3001;
+const app = express();
 
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use((req,res)=>{
-    res.status(404).end();
-})
+app.get('/', (req, res) => {
+    res.send('Hello, this is the root endpoint!');
+});
 
-db.connect(err=>{
-    if(err)throw err;
-    console.log('connected to database');
-    app.listen(PORT,()=>{
-        console.log(`server running on ${PORT}`);
+app.use((req, res, next) => {
+    res.status(404).send("Not Found");
+});
+
+db.connect(err => {
+    if (err) throw err;
+    console.log('Connected to the database');
+    app.listen(PORT, () => {
+        console.log(`Server running on ${PORT}`);
         startInq();
     });
 });
